@@ -2,6 +2,7 @@ import { Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import mysql2 from 'mysql2';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -11,6 +12,7 @@ const MYSQL_URI = process.env.MYSQL_URI || 'mysql://root@localhost:3306/vss_dc';
 
 const sequelizeOptions = {
     dialect: 'mysql',
+    dialectModule: mysql2,
     logging: false
 };
 
