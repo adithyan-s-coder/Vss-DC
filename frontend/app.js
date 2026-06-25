@@ -283,6 +283,9 @@ function navigateTo(pageId, showForm = false) {
 function initSidebarCollapse() {
   const sidebar = document.getElementById('sidebar');
   const collapseBtn = document.getElementById('collapseBtn');
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  const sidebarOverlay = document.getElementById('sidebarOverlay');
+
   if (sidebar && collapseBtn) {
     collapseBtn.addEventListener('click', () => {
       sidebar.classList.toggle('collapsed');
@@ -295,6 +298,29 @@ function initSidebarCollapse() {
         if (icon) icon.innerHTML = '<polyline points="9 18 15 12 9 6"/>';
         if (label) label.textContent = 'Collapse';
       }
+    });
+  }
+
+  // Mobile sidebar logic
+  if (mobileMenuBtn && sidebar && sidebarOverlay) {
+    mobileMenuBtn.addEventListener('click', () => {
+      sidebar.classList.add('mobile-open');
+      sidebarOverlay.classList.add('active');
+    });
+
+    sidebarOverlay.addEventListener('click', () => {
+      sidebar.classList.remove('mobile-open');
+      sidebarOverlay.classList.remove('active');
+    });
+
+    // Close sidebar on mobile when a nav item is clicked
+    document.querySelectorAll('.sidebar-nav .nav-item').forEach(item => {
+      item.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+          sidebar.classList.remove('mobile-open');
+          sidebarOverlay.classList.remove('active');
+        }
+      });
     });
   }
 }
