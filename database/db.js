@@ -9,7 +9,19 @@ dotenv.config({ path: path.join(__dirname, '../backend/.env') });
 
 const MYSQL_URI = process.env.MYSQL_URI || 'mysql://root@localhost:3306/vss_dc';
 
-export const sequelize = new Sequelize(MYSQL_URI, {
+const sequelizeOptions = {
     dialect: 'mysql',
     logging: false
-});
+};
+
+// Aiven and Vercel require SSL
+if (MYSQL_URI.includes('aivencloud') || process.env.NODE_ENV === 'production') {
+    sequelizeOptions.dialectOptions = {
+        ssl: {
+            require: true,
+            rejectUnauthorized: false // Required for Aiven
+        }
+    };
+}
+
+export const sequelize = new Sequelize(MYSQL_URI, sequelizeOptions);
