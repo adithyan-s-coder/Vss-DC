@@ -19,10 +19,7 @@ app.use(cors());
 sequelize.authenticate()
     .then(() => {
         console.log('✅ Connected to MySQL database');
-        // Sync models (creates tables if they don't exist)
-        return sequelize.sync({ alter: true });
     })
-    .then(() => console.log('✅ Database models synchronized'))
     .catch(err => console.error('MySQL connection error:', err));
 
 // Test Home Route
