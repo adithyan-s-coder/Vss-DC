@@ -411,10 +411,8 @@ function initReceivedCloth() {
   if (btnBack) btnBack.addEventListener('click', () => { document.querySelectorAll('.form-actions .btn-action').forEach(b => b.disabled = false); showReceivedList(); });
   if (searchInput) searchInput.addEventListener('input', renderReceivedTable);
 
-  loadFromFirestore(receivedCol, STORAGE_KEY).then(() => {
-    renderReceivedTable();
-    updateDashboardMetrics();
-  });
+  renderReceivedTable();
+  updateDashboardMetrics();
 }
 
 function showInwardForm(reset = true) {
@@ -2259,7 +2257,7 @@ function setupCustomDropdown(wrapperId, searchId, hiddenId, optionsContainerId, 
 
   function renderOptions(filter) {
     const q = (filter || '').toLowerCase();
-    const filtered = allItems.filter(i => i.label.toLowerCase().includes(q));
+    const filtered = allItems.filter(i => (i.label || '').toLowerCase().includes(q));
     optionsEl.innerHTML = filtered.length
       ? filtered.map(i => `<div class="custom-option" data-value="${i.value}" data-label="${i.label}">${i.label}</div>`).join('')
       : '<div class="custom-option" style="color:var(--text-secondary);cursor:default;">No results</div>';
@@ -2284,12 +2282,12 @@ function setupCustomDropdown(wrapperId, searchId, hiddenId, optionsContainerId, 
 
 function updatePartyDropdowns() {
   const parties = getParties();
-  const items = parties.map(p => ({ value: p.id, label: p.name }));
+  const items = parties.map(p => ({ value: p.id, label: p.name || '' }));
 
   // Populate datalist for auto-fill in Add Party form
   const datalist = document.getElementById('partyNamesList');
   if (datalist) {
-    datalist.innerHTML = parties.map(p => `<option value="${p.name}">`).join('');
+    datalist.innerHTML = parties.map(p => `<option value="${p.name || ''}">`).join('');
   }
 
   // Setup or refresh all party dropdowns
