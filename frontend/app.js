@@ -3000,22 +3000,36 @@ document.addEventListener('DOMContentLoaded', () => {
     const userAvatar = document.getElementById('userAvatar');
     const userDropdown = document.getElementById('userDropdown');
     const btnLogout = document.getElementById('btnLogout');
+    const btnNotifications = document.getElementById('btnNotifications');
+    const notificationDropdown = document.getElementById('notificationDropdown');
 
     if (userAvatar && userDropdown && btnLogout) {
         userAvatar.addEventListener('click', (e) => {
             e.stopPropagation();
             userDropdown.classList.toggle('show');
+            if (notificationDropdown) notificationDropdown.classList.remove('show');
         });
 
         document.addEventListener('click', (e) => {
             if (!userDropdown.contains(e.target) && e.target !== userAvatar) {
                 userDropdown.classList.remove('show');
             }
+            if (notificationDropdown && !notificationDropdown.contains(e.target) && e.target !== btnNotifications && !btnNotifications.contains(e.target)) {
+                notificationDropdown.classList.remove('show');
+            }
         });
 
         btnLogout.addEventListener('click', () => {
             localStorage.removeItem('vss_logged_in');
             window.location.href = 'login.html';
+        });
+    }
+
+    if (btnNotifications && notificationDropdown) {
+        btnNotifications.addEventListener('click', (e) => {
+            e.stopPropagation();
+            notificationDropdown.classList.toggle('show');
+            if (userDropdown) userDropdown.classList.remove('show');
         });
     }
 });
