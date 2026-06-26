@@ -60,7 +60,7 @@ app.post('/api/login', async (req, res) => {
         res.json({ message: 'Login successful' });
     } catch (error) {
         console.error('Login Error:', error);
-        res.status(500).json({ error: 'Server error during login' });
+        res.status(500).json({ error: 'DB Error: ' + error.message });
     }
 });
 
