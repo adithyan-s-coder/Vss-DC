@@ -815,6 +815,7 @@ function initDelivery() {
       }
     });
     inwNoInput.addEventListener('blur', fetchInwardDetailsForDelivery);
+    inwNoInput.addEventListener('input', fetchInwardDetailsForDelivery);
   }
 
   loadFromMongoDB('delivery', DELIVERY_STORAGE_KEY).then(() => {
@@ -907,12 +908,13 @@ function fetchInwardDetailsForDelivery() {
   const inwNoInput = document.getElementById('delInwNo');
 
   const inwNo = inwNoInput.value.trim();
+  if (!inwNo) return; // Don't alert if empty
+
   const entries = getEntries();
   const matchedEntry = entries.find(e => String(e.inwNo) === String(inwNo));
 
   if (!matchedEntry) {
-    alert(`No received entry found for Inward No: ${inwNo}`);
-    return;
+    return; // Don't alert to avoid annoyance on blur/input
   }
 
   // Pre-fill party
@@ -929,13 +931,15 @@ function fetchInwardDetailsForDelivery() {
 
   const tbody = document.getElementById('delItemGridBody');
   if (!tbody) return;
+  
+  // Clear existing rows before appending to prevent duplication
+  tbody.innerHTML = '';
 
   // Append new rows based on received items
   if (matchedEntry.items && matchedEntry.items.length > 0) {
     matchedEntry.items.forEach(it => {
       const sno = tbody.querySelectorAll('tr').length + 1;
       const tr = document.createElement('tr');
-      // Format: S.No, Inw No, Colour, Dia, Fabric, Process, Del Roll, Del Wt, P Order, P Lot, [x]
 
       tr.innerHTML = `
         <td>${sno}</td>
@@ -953,6 +957,7 @@ function fetchInwardDetailsForDelivery() {
       tr.querySelector('.btn-delete-row').addEventListener('click', () => { tr.remove(); renumberDeliveryRows(); updateDeliveryTotals(); });
       tbody.appendChild(tr);
     });
+    updateDeliveryTotals();
   }
 
   updateDeliveryTotals();
