@@ -838,10 +838,7 @@ function addDeliveryRowFromInputs() {
   const pLot = document.getElementById('delItemPLot')?.value || '';
   const inwNoInput = document.getElementById('delInwNo')?.value || '';
 
-  if (!colour && !fabric) {
-    alert('Please enter at least Colour or Fabric');
-    return;
-  }
+  if (!colour && !fabric && !process && roll === '0' && wt === '0') return;
 
   const tbody = document.getElementById('delItemGridBody');
   if (!tbody) return;
