@@ -11,20 +11,29 @@ dotenv.config({ path: path.join(__dirname, '../backend/.env') });
 let MYSQL_URI = process.env.MYSQL_URI || 'mysql://root@localhost:3306/vss_dc';
 MYSQL_URI = MYSQL_URI.trim();
 
+let servername = undefined;
+const aivenHost = 'mysql-1b61df45-adithyannn-573a.h.aivencloud.com';
+if (MYSQL_URI.includes(aivenHost)) {
+    servername = aivenHost;
+    MYSQL_URI = MYSQL_URI.replace(aivenHost, '143.110.246.40');
+}
+
 const sequelizeOptions = {
     dialect: 'mysql',
     dialectModule: mysql2,
     logging: false
 };
 
-// Aiven and Vercel require SSL
-if (MYSQL_URI.includes('aivencloud') || process.env.NODE_ENV === 'production') {
+if (MYSQL_URI.includes('aivencloud') || servername || process.env.NODE_ENV === 'production') {
     sequelizeOptions.dialectOptions = {
         ssl: {
             require: true,
-            rejectUnauthorized: false // Required for Aiven
+            rejectUnauthorized: false
         }
     };
+    if (servername) {
+        sequelizeOptions.dialectOptions.ssl.servername = servername;
+    }
 }
 
 export const sequelize = new Sequelize(MYSQL_URI, sequelizeOptions);
